@@ -5,8 +5,3 @@ The user is player X and once they select a space for their move, the computer m
 
 The project was built using HTML, CSS, and Javascript
 
-### Desktop view
-<img src="images/SS_tictactoe_desktop1.png" alt="desktop view screenshot" width="800">
-
-### Mobile view
-<img src="images/SS_tictactoe_mobile1.png" width="400" alt="mobile view screenshot">
