@@ -1,4 +1,4 @@
-
+// factory function to create player. 
 const player = {name: "x", spaces: null, color: "white", winner: false}
 
 
@@ -16,7 +16,7 @@ const winningCombos = [
 ];
 
 
-// 1. gameboard array of objects
+// 1. gameboard array of objects - module
 const spaceElements = Array.from(document.querySelectorAll(".boxes")).map(
   (spaceElement, index) => ({
     element: spaceElement,
@@ -26,12 +26,12 @@ const spaceElements = Array.from(document.querySelectorAll(".boxes")).map(
 );
 console.log(spaceElements);
 
-// 1. add new player
+// 1. add new player with factory function
 function addNewPlayer(name, spaces, color, winner) {
 const player1 = 
 }
 
-// 2. game starts when user clicks on a space an x is given
+// 2. game starts when user clicks on a space an x is given - module
 spaceElements.forEach((spaceElement) => {
   spaceElement.element.addEventListener("click", (e) => {
     console.log(`player chooses ${spaceElement.index}`);
@@ -62,7 +62,7 @@ function game(e) {
   }
 
 
-  // 6. computer selection
+  // 6. computer selection - module
   function getComputerChoice() {
     const availableSpaces = spaceElements.filter(
       (spaceElement) =>
@@ -87,7 +87,7 @@ function game(e) {
   }
   checkWinner();
 
-  // 3. for each space check if the index matches. If it does not, then drop out. If all values of this wincondition are true, then return win.
+  // 3. for each space check if the index matches array of winning indexes. If it does not, then drop out. If all values of this are true, then return winner.
   function checkWinner(player) {
     let foundWinner = false;
     winningCombos.forEach((combo) => {
