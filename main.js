@@ -1,4 +1,4 @@
-
+const boxes = []; 
 
 // 1. add new players
 // factory function to create player.
@@ -17,21 +17,21 @@ function newPlayer(_name, _key) {
 (() => {
   const gameContainer = document.querySelector(".container");
   const gameboard = [...Array(9).keys()];
-  const boxes = [] // is this correct, to put the boxes in an array?
+
   console.log(gameContainer);
   gameboard.map((i) => {
     const box = document.createElement("div");
     box.classList.add("boxes");
     box.dataset.index = i;
-    boxes.push(box) // add the box to the array
+    boxes.push(box); // add the box to the array
     // box.addEventListener("click", (e) => game(e));
     gameContainer.append(box);
   });
   const status = document.querySelector(".status");
-// })();
+  // })();
 
-// // module to run the game (create player)
-// (() => {
+  // // module to run the game (create player)
+  // (() => {
   const player1 = newPlayer("player1", "x");
   const player2 = newPlayer("player2", "o");
   console.log(player1, player2);
@@ -39,15 +39,22 @@ function newPlayer(_name, _key) {
   // const gameContainer = document.querySelector(".container");
   // const box = document.getElementsByClassName(".boxes")
   gameContainer.addEventListener("click", (e) => {
-    if (!gameWinner && boxes.every(box => box.textContent !== "")) {// not working
-      status.textContent = "It's a tie game";
-      gameOver()
+    if (
+      !gameWinner &&
+      e.target.classList.contains("boxes") &&
+      e.target.textContent === ""
+    ) {
+      e.target.innerHTML = currentPlayer.key;
+      checkWinner(currentPlayer, boxes);
     }
-    else if (!gameWinner && e.target.classList.contains("boxes") && e.target.textContent === "") {
-    e.target.innerHTML = currentPlayer.key;
-    checkWinner(currentPlayer, boxes)
-    changePlayer()
+    const isTie = checkTie();
+  
+    if (isTie) {
+      return gameOver(); 
     }
+    
+    // if no game winner and no tie then change player  
+    changePlayer();
   });
 
   let gameWinner = null;
@@ -62,64 +69,68 @@ function newPlayer(_name, _key) {
     [2, 4, 6],
   ];
 
-  function checkWinner(player, boxes) {
-  let foundWinner = false;
-  winningCombos.forEach((combo) => {
-    let comboIsWinner = true;
-    if (foundWinner === true) {
-      return;
+  function checkTie() {
+    if (!gameWinner && boxes.every((box) => box.textContent !== "")) {
+      status.textContent = "It's a tie game";
+      return true;
     }
-    for (let i = 0; i < combo.length; i++) {
-      const index = combo[i];
-      if (boxes[index].textContent !== player.key) {
-        comboIsWinner = false;
-        break;
-      }
-    }
-    if (comboIsWinner) {
-      foundWinner = true;
-      combo.forEach((index) => {
-       boxes[index].classList.add("winner");
-      });
-    }
-  });
-  if (foundWinner === true) {
-    gameWinner = player;
-    status.textContent = `${player.name} is winner`;
-    gameOver();
+    return false;
   }
-}
 
-function gameOver() {
-  resetBtn.classList.toggle("hidden");
-}
+  function checkWinner(player, boxes) {
+    let foundWinner = false;
+    winningCombos.forEach((combo) => {
+      let comboIsWinner = true;
+      if (foundWinner === true) {
+        return;
+      }
+      for (let i = 0; i < combo.length; i++) {
+        const index = combo[i];
+        if (boxes[index].textContent !== player.key) {
+          comboIsWinner = false;
+          break;
+        }
+      }
+      if (comboIsWinner) {
+        foundWinner = true;
+        combo.forEach((index) => {
+          boxes[index].classList.add("winner");
+        });
+      }
+    });
+    if (foundWinner === true) {
+      gameWinner = player;
+      status.textContent = `${player.name} is winner`;
+      gameOver();
+    }
+  }
 
-function changePlayer() {
+  function gameOver() {
+    resetBtn.classList.toggle("hidden");
+  }
+
+  function changePlayer() {
     if (currentPlayer.key == "x") {
       currentPlayer = player2;
     } else {
       currentPlayer = player1;
-    } 
+    }
   }
 
   // check score
 
-
   // 4. reset
-const resetBtn = document.getElementById("resetBtn");
-resetBtn.addEventListener("click", () => {
-  boxes.forEach((box) => {
-    box.textContent = "";
-    box.classList.remove("winner")
-  }) 
-  gameWinner = null
-  status.textContent = "Let's Play"
-  resetBtn.classList.add("hidden")
-});
+  const resetBtn = document.getElementById("resetBtn");
+  resetBtn.addEventListener("click", () => {
+    boxes.forEach((box) => {
+      box.textContent = "";
+      box.classList.remove("winner");
+    });
+    gameWinner = null;
+    status.textContent = "Let's Play";
+    resetBtn.classList.add("hidden");
+  });
 })();
-
-
-
 
 // function game(e) {
 //   console.log(e);
