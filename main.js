@@ -1,8 +1,3 @@
-const boxes = []; 
-
-// 1. add new players
-// factory function to create player.
-
 function newPlayer(_name, _key) {
   const name = _name;
   const key = _key;
@@ -13,31 +8,24 @@ function newPlayer(_name, _key) {
   return { name, key, score, incremenetScore };
 }
 
-// function to create the gameboard
 (() => {
   const gameContainer = document.querySelector(".container");
   const gameboard = [...Array(9).keys()];
-
+  const boxes = [];
   console.log(gameContainer);
   gameboard.map((i) => {
     const box = document.createElement("div");
     box.classList.add("boxes");
     box.dataset.index = i;
-    boxes.push(box); // add the box to the array
-    // box.addEventListener("click", (e) => game(e));
+    boxes.push(box); 
     gameContainer.append(box);
   });
   const status = document.querySelector(".status");
-  // })();
-
-  // // module to run the game (create player)
-  // (() => {
   const player1 = newPlayer("player1", "x");
   const player2 = newPlayer("player2", "o");
   console.log(player1, player2);
   let currentPlayer = player1;
-  // const gameContainer = document.querySelector(".container");
-  // const box = document.getElementsByClassName(".boxes")
+
   gameContainer.addEventListener("click", (e) => {
     if (
       !gameWinner &&
@@ -48,13 +36,12 @@ function newPlayer(_name, _key) {
       checkWinner(currentPlayer, boxes);
     }
     const isTie = checkTie();
-  
     if (isTie) {
-      return gameOver(); 
+      return gameOver();
     }
-    
-    // if no game winner and no tie then change player  
+    // if no game winner and no tie then change player
     changePlayer();
+    getComputerChoice();
   });
 
   let gameWinner = null;
@@ -84,6 +71,7 @@ function newPlayer(_name, _key) {
       if (foundWinner === true) {
         return;
       }
+
       for (let i = 0; i < combo.length; i++) {
         const index = combo[i];
         if (boxes[index].textContent !== player.key) {
@@ -105,6 +93,17 @@ function newPlayer(_name, _key) {
     }
   }
 
+  function getComputerChoice() {
+    const emptyBoxes = boxes.filter((box) => box.textContent === "");
+    if (emptyBoxes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * emptyBoxes.length);
+      const computerChoice = emptyBoxes[randomIndex];
+      computerChoice.innerHTML = player2.key;
+      checkWinner(player2, boxes);
+      changePlayer();
+    }
+  }
+
   function gameOver() {
     resetBtn.classList.toggle("hidden");
   }
@@ -117,9 +116,6 @@ function newPlayer(_name, _key) {
     }
   }
 
-  // check score
-
-  // 4. reset
   const resetBtn = document.getElementById("resetBtn");
   resetBtn.addEventListener("click", () => {
     boxes.forEach((box) => {
@@ -129,22 +125,6 @@ function newPlayer(_name, _key) {
     gameWinner = null;
     status.textContent = "Let's Play";
     resetBtn.classList.add("hidden");
+    currentPlayer = player1;
   });
 })();
-
-// function game(e) {
-//   console.log(e);
-//   const playerChoice = spaceElements.find((obj) => obj.element === e.target);
-//   if (currentPlayer === "x") {
-//     playerChoice.content = "x";
-//     playerChoice.element.innerHTML = "x";
-//   }
-//   if (checkWinner("x") || checkWinner("o")) {
-//     gameOver();
-//   } else if (currentPlayer === "x") {
-//     currentPlayer = "o";
-//     getComputerChoice();
-//     checkWinner("o");
-//     currentPlayer = "x";
-//   }
-// }
